@@ -1,9 +1,16 @@
+exec { 'apt-get update': 
+  command => '/usr/bin/apt-get update', 
+}->
+package { 'curl':
+  ensure => 'latest',  
+}->
 class { 'rabbitmq':
   port              => '5672',
-  environment_variables   => {
-    'RABBITMQ_NODENAME'     => 'node01',
-    'RABBITMQ_SERVICENAME'  => 'RabbitMQ'
-  }
+  service_ensure    => 'running', 
+  delete_guest_user => true,
+}->
+rabbitmq_user { 'ulrich':
+  admin    => true,
+  password => 'keins',
+  provider => 'rabbitmqctl',
 }
-
-include 'rabbitmq'
